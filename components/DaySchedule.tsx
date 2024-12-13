@@ -38,7 +38,10 @@ export default function DaySchedule({ date, events, onAddEvent, onDeleteEvent, o
 
   return (
     <div className="border rounded-lg p-4">
-      <h3 className="font-bold mb-2">
+      <h3 
+        className="font-bold mb-2 cursor-pointer hover:text-blue-600"
+        onClick={() => setIsAdding(true)}
+      >
         {date.toLocaleDateString('ja-JP', { weekday: 'long', month: 'long', day: 'numeric' })}
       </h3>
       <ul className="space-y-2 mb-4">
@@ -70,12 +73,8 @@ export default function DaySchedule({ date, events, onAddEvent, onDeleteEvent, o
           </li>
         ))}
       </ul>
-      {isAdding ? (
+      {isAdding && (
         <EventInput onSubmit={handleAddEvent} onCancel={() => setIsAdding(false)} />
-      ) : (
-        <Button onClick={() => setIsAdding(true)} variant="outline" size="sm">
-          予定を追加
-        </Button>
       )}
     </div>
   )

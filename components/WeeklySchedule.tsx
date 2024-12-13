@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
-import { format, addWeeks, startOfWeek, addDays } from 'date-fns';
+import { format, addWeeks, addDays } from 'date-fns';
 import { useSwipeable } from 'react-swipeable';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -66,7 +66,7 @@ const WeeklySchedule: React.FC = () => {
   });
 
   const weekDays = [...Array(7)].map((_, i) => 
-    addDays(startOfWeek(currentWeek), i)
+    addDays(currentWeek, i)
   );
 
   return (
@@ -76,7 +76,7 @@ const WeeklySchedule: React.FC = () => {
           <ChevronLeft className="h-6 w-6" />
         </Button>
         <h2 className="text-xl font-bold">
-          {format(weekDays[0], 'MMM d')} - {format(weekDays[6], 'MMM d, yyyy')}
+          {format(weekDays[0], 'M/d')} - {format(weekDays[6], 'M/d')}
         </h2>
         <Button variant="ghost" onClick={goToNextWeek}>
           <ChevronRight className="h-6 w-6" />
