@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { X } from 'lucide-react'
 import EventInput from './EventInput'
+import Image from 'next/image'
+import { WeatherData } from '@/types/weather'
 
 interface DayScheduleProps {
   date: Date
@@ -12,9 +14,10 @@ interface DayScheduleProps {
   onAddEvent: (date: string, event: string) => void
   onDeleteEvent: (date: string, index: number) => void
   onEditEvent: (date: string, index: number, newEvent: string) => void
+  weather?: WeatherData
 }
 
-export default function DaySchedule({ date, events, onAddEvent, onDeleteEvent, onEditEvent }: DayScheduleProps) {
+export default function DaySchedule({ date, events, weather, onAddEvent, onDeleteEvent, onEditEvent }: DayScheduleProps) {
   const [isAdding, setIsAdding] = useState(false)
   const [editingIndex, setEditingIndex] = useState<number | null>(null)
   const [editingText, setEditingText] = useState("")
@@ -38,12 +41,25 @@ export default function DaySchedule({ date, events, onAddEvent, onDeleteEvent, o
 
   return (
     <div className="border rounded-lg p-4">
-      <h3 
-        className="font-bold mb-2 cursor-pointer hover:text-blue-600"
-        onClick={() => setIsAdding(true)}
-      >
-        {date.toLocaleDateString('ja-JP', { weekday: 'long', month: 'long', day: 'numeric' })}
-      </h3>
+      <div className="flex justify-between items-center">
+        <h3 
+          className="font-bold mb-2 cursor-pointer hover:text-blue-600"
+          onClick={() => setIsAdding(true)}
+        >
+          {date.toLocaleDateString('ja-JP', { weekday: 'long', month: 'long', day: 'numeric' })}
+        </h3>
+        {weather && (
+          <div className="flex items-center gap-2">
+            <Image
+              src={`https://openweathermap.org/img/wn/${weather.icon}@2x.png`}
+              alt="天気アイコン"
+              width={40}
+              height={40}
+            />
+            <span>{weather.temperature}°C</span>
+          </div>
+        )}
+      </div>
       <ul className="space-y-2 mb-4">
         {events!=null && events.map((event, index) => (
           <li key={index} className="bg-gray-100 p-2 rounded flex justify-between items-center">

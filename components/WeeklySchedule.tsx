@@ -5,11 +5,14 @@ import { format, addWeeks, addDays } from 'date-fns';
 import { useSwipeable } from 'react-swipeable';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import DaySchedule from './DaySchedule';
+import DaySchedule from '@/components/DaySchedule';
+import Image from 'next/image';
+import { WeatherData, WeatherState } from '@/types/weather';
 
 const WeeklySchedule: React.FC = () => {
   const [currentWeek, setCurrentWeek] = useState(new Date());
   const [events, setEvents] = useState<{ [date: string]: string[] }>({});
+  const [weather, setWeather] = useState<WeatherState>({});
 
   useEffect(() => {
     const savedEvents = localStorage.getItem('calendar-events');
@@ -17,6 +20,20 @@ const WeeklySchedule: React.FC = () => {
       setEvents(JSON.parse(savedEvents));
     }
   }, []);
+
+  useEffect(() => {
+    const fetchWeather = async () => {
+      try {
+        const response = await fetch(`/api/weather?lat=35.6762&lon=139.6503`);
+        const data = await response.json();
+        setWeather(data);
+      } catch (error) {
+        console.error('天気データの取得に失敗しました:', error);
+      }
+    };
+
+    fetchWeather();
+  }, [currentWeek]);
 
   const handleAddEvent = (date: string, event: string) => {
     const updatedEvents = {
@@ -85,11 +102,13 @@ const WeeklySchedule: React.FC = () => {
       <div className="space-y-4">
         {weekDays.map(day => {
           const dateStr = day.toISOString().split('T')[0];
+          const weatherData = weather[dateStr];
           return (
             <DaySchedule 
               key={dateStr}
               date={day}
               events={events[dateStr] || []}
+              weather={weatherData}
               onAddEvent={handleAddEvent}
               onDeleteEvent={handleDeleteEvent}
               onEditEvent={handleEditEvent}
